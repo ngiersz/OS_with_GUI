@@ -83,12 +83,11 @@ public class FileSystem {
 	}
 
 	// Method needed for testing.
-	private void openFileWithOutProccess(String name) {
+	public void openFileWithOutProcess(String name) {
 		for (int i = 0; i < mainCatalog.size(); i++) {
 			if (mainCatalog.get(i).name.equals(name)) {
 				if (!mainCatalog.get(i).open) {
 					mainCatalog.get(i).open = true;
-					// System.out.println("FileSystem: File " + name + " opened.");
 					break;
 				} else
 					break;
@@ -97,7 +96,7 @@ public class FileSystem {
 	}
 
 	// Method needed for testing.
-	private void closeFileWithOutProccess(String name) {
+	public void closeFileWithOutProcess(String name) {
 		for (int i = 0; i < mainCatalog.size(); i++) {
 			if (mainCatalog.get(i).name.equals(name)) {
 				if (mainCatalog.get(i).open) {
@@ -323,7 +322,7 @@ public class FileSystem {
 		if (createEmptyFile(name) == 0)
 			return 0;
 		else {
-			openFileWithOutProccess(name);
+			openFileWithOutProcess(name);
 			appendToFile(name, content);
 			for (int i = 0; i < mainCatalog.size(); i++) {
 				if (mainCatalog.get(i).name.equals(name)) {
@@ -331,7 +330,7 @@ public class FileSystem {
 					break;
 				}
 			}
-			closeFileWithOutProccess(name);
+			closeFileWithOutProcess(name);
 			return 1;
 		}
 
@@ -485,24 +484,21 @@ public class FileSystem {
 
 	// Prints value of every memory cell.
 	public String showData() {
-	String result = "";
+		String result = "";
 		int x = 1;
 		for (int i = 0; i < DISK_SIZE; i++) {
 			if (i % 32 == 0) {
 				result += (x + " ");
-				if (x < 10)
-				{
+				if (x < 10) {
 					result += (" ");
 				}
 				x++;
 			}
 			result += (dataArea[i]);
-			if ((i + 1) % 8 == 0)
-			{
+			if ((i + 1) % 8 == 0) {
 				result += ("\t");
 			}
-			if ((i + 1) % 32 == 0)
-			{
+			if ((i + 1) % 32 == 0) {
 				result += ("\n");
 			}
 		}
@@ -522,8 +518,7 @@ public class FileSystem {
 			else
 				y = 1;
 			result += (y + " ");
-			if ((i + 1) % 16 == 0)
-			{
+			if ((i + 1) % 16 == 0) {
 				result += ("\n");
 			}
 		}
@@ -538,17 +533,13 @@ public class FileSystem {
 		for (int i = 1; i <= NUMBER_OF_BLOCKS; i++) {
 			result += ("[");
 			result += (i + ": ");
-			if (fileAllocationTable[i - 1] == -1)
-			{
+			if (fileAllocationTable[i - 1] == -1) {
 				result += (-1);
-			}
-			else if (fileAllocationTable[i - 1] != -2)
-			{
+			} else if (fileAllocationTable[i - 1] != -2) {
 				result += (fileAllocationTable[i - 1] + 1);
 			}
 			result += ("]");
-			if ((i) % 8 == 0)
-			{
+			if ((i) % 8 == 0) {
 				result += ("\n");
 			}
 		}
@@ -561,19 +552,22 @@ public class FileSystem {
 		String result = "";
 		result += ("root:\n");
 		if (mainCatalog.isEmpty()) {
-			result +="Main Catalog is Empty\n";
+			result += "Main Catalog is Empty\n";
 		} else {
-			result += "NR\tNAME\tFIRST BLOCK\tSIZE\tREAD CHARS\n";
+			result += "NR\tNAME\t\tFIRST BLOCK\tSIZE\tREAD CHARS\n";
 			for (int i = 0; i < mainCatalog.size(); i++) {
-				result +=(i + 1) + "\t";
-				result +=(mainCatalog.get(i).name + "\t");
-				result +=(mainCatalog.get(i).indexOfFirstBlock + 1 + "\t\t");
-				result +=(mainCatalog.get(i).size + "\t");
-				result +=(mainCatalog.get(i).readChars);
-				result +=("\n");
+				result += (i + 1) + "\t";
+				if (mainCatalog.get(i).name.length() < 8)
+					result += (mainCatalog.get(i).name + "\t" + "\t");
+				else
+					result += (mainCatalog.get(i).name + "\t");
+				result += (mainCatalog.get(i).indexOfFirstBlock + 1 + "\t\t");
+				result += (mainCatalog.get(i).size + "\t");
+				result += (mainCatalog.get(i).readChars);
+				result += ("\n");
 			}
 		}
-		result +=("\n");
+		result += ("\n");
 		return result;
 	}
 
