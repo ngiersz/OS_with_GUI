@@ -42,7 +42,7 @@ public class ProcessManagment {
 		Globals.terminalArea.append("\n");
 		for (int i = 0; i < istniejace_procesy.size(); i++) {
 			istniejace_procesy.getPCB(i).print();
-			Globals.terminalArea.append("\n");
+			//Globals.terminalArea.append("\n");
 			
 			result += istniejace_procesy.getPCB(i).print();
 			result += "\n";

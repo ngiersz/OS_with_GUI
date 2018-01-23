@@ -231,10 +231,10 @@ public int getStan() {
 public String print() {
 	String result = "";
 	
-	Globals.terminalArea.append("Proces: " + this.Name + " ID: " + this.ID + "\n");
+	/*Globals.terminalArea.append("Proces: " + this.Name + " ID: " + this.ID + "\n");
 	Globals.terminalArea.append("Priorytet: " + this.priorytet_dynamiczny + " Licznik wykonanych: " + this.licznik_rozkazow + " stan: " + this.stan + "\n");
 	Globals.terminalArea.append("R1: " + R1 + " R2: " + R2 + " R3: " +R3  + "\n");
-	Globals.terminalArea.append("Plik: " + file_name + "\n");
+	Globals.terminalArea.append("Plik: " + file_name + "\n");*/
 	
 	result += ("Proces: " + this.Name + " ID: " + this.ID + "\n");
 	result += ("Priorytet: " + this.priorytet_dynamiczny + " Licznik wykonanych: " + this.licznik_rozkazow + " stan: " + this.stan + "\n");

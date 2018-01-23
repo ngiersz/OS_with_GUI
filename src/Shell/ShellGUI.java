@@ -13,7 +13,7 @@ import Communication.Communication;
 
 import fileManagement.FileSystem;
 import memoryManagement.Memory;
-
+import mutexLock.MutexLock;
 import globals.Globals;
 
 import java.awt.BorderLayout;
@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.List;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,15 +44,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument.Content;
+import javax.swing.text.DefaultCaret;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
 
 //TODO: wpisywanie do pliku informacji przy jego tworzeniu "Wrong command"
 //TODO: nie ma b³êdu jak wpiszesz cf nazwa cokolwiek
 //TODO: cf-e ggg 
+
 public class ShellGUI extends JFrame
 {
-	
+	int fontSize=15;
 	private BufferedReader UserInput;
 	private String User_Command;
 	boolean ScriptFlag;
@@ -64,12 +68,10 @@ public class ShellGUI extends JFrame
 	public process_control_block  maka = new process_control_block();
 	private ProcessManagment processManagment;
 
-	
+	public Action rootListener;
 	public Action inputListener;
-	public Action inputListenerTemp;
 	public JOptionPane fileContent;
 	
-	public boolean done = false;
 	JTextArea memoryArea = new JTextArea(0,0);
 	JTextArea diskArea = new JTextArea(0,0);
 	JTextArea pipesArea = new JTextArea(0,0);
@@ -101,6 +103,8 @@ public class ShellGUI extends JFrame
 		//memory
 		JPanel memoryPanel = new JPanel();
 		memoryPanel.setBackground(Color.GRAY);
+		DefaultCaret memoryCaret = (DefaultCaret)memoryArea.getCaret(); //pozycja scrolla niezmieniana automatycznie
+		memoryCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		memoryPanel.setLayout(new GridLayout(0,1));
 		Border memoryBorder = BorderFactory.createTitledBorder("Memory");
 		memoryPanel.setBorder(memoryBorder);
@@ -112,6 +116,8 @@ public class ShellGUI extends JFrame
 		//disk
 		JPanel diskPanel = new JPanel();
 		diskPanel.setBackground(Color.GRAY);
+		DefaultCaret diskCaret = (DefaultCaret)diskArea.getCaret(); //pozycja scrolla niezmieniana automatycznie
+		diskCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		diskPanel.setLayout(new GridLayout(0,1));
 		Border diskBorder = BorderFactory.createTitledBorder("Disk");
 		diskPanel.setBorder(diskBorder);
@@ -123,6 +129,8 @@ public class ShellGUI extends JFrame
 		//pipes
 		JPanel pipesPanel = new JPanel();
 		pipesPanel.setBackground(Color.GRAY);
+		DefaultCaret pipesCaret = (DefaultCaret)pipesArea.getCaret(); //pozycja scrolla niezmieniana automatycznie
+		pipesCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		pipesPanel.setLayout(new GridLayout(0,1));
 		Border pipesBorder = BorderFactory.createTitledBorder("Pipes");
 		pipesPanel.setBorder(pipesBorder);	
@@ -133,6 +141,8 @@ public class ShellGUI extends JFrame
 		//terminal
 		JPanel terminalPanel = new JPanel();
 		terminalPanel.setBackground(Color.GRAY);
+		DefaultCaret terminalCaret = (DefaultCaret)Globals.terminalArea.getCaret(); //aktualizowanie pozycji przy pojawienu sie nowego tekstu
+		terminalCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		terminalPanel.setLayout(new GridLayout(0,1));
 		Border terminalBorder = BorderFactory.createTitledBorder("Terminal");
 		terminalPanel.setBorder(terminalBorder);	
@@ -140,6 +150,34 @@ public class ShellGUI extends JFrame
 		terminalPanel.add(terminalScroll);
 
 		this.getContentPane().setBackground(Color.gray);
+		
+		Globals.terminalArea.setBackground(Color.BLACK);
+		Globals.terminalArea.setForeground(Color.GREEN);
+		Globals.terminalArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize+5));
+		
+		pipesArea.setBackground(Color.BLACK);
+		pipesArea.setForeground(Color.ORANGE);
+		pipesArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+
+		registersArea.setBackground(Color.BLACK);
+		registersArea.setForeground(Color.ORANGE);
+		registersArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+		
+		diskArea.setBackground(Color.BLACK);
+		diskArea.setForeground(Color.RED);
+		diskArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+
+		memoryArea.setBackground(Color.BLACK);
+		memoryArea.setForeground(Color.ORANGE);
+		memoryArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+		
+		processesArea.setBackground(Color.BLACK);
+		processesArea.setForeground(Color.RED);
+		processesArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+		
+		inputField.setBackground(Color.BLACK);
+		inputField.setForeground(Color.YELLOW);
+		inputField.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
 		
 		//input listener
 		inputListener = new AbstractAction("Input")
@@ -161,7 +199,7 @@ public class ShellGUI extends JFrame
 				
 				if(!(User_Command.isEmpty()) && User_Command.length() == 4 && User_Command.charAt(0) == 'e' && User_Command.charAt(1) == 'x' && User_Command.charAt(2) == 'i' && User_Command.charAt(3) == 't')
 				{
-					//break;
+					dispose();
 				}
 				if(!(WrongCFlag))
 				{
@@ -209,6 +247,8 @@ public class ShellGUI extends JFrame
 		JPanel processesPanel = new JPanel();
 		processesPanel.setLayout(new GridLayout(0,1));
 		processesPanel.setBackground(Color.GRAY);
+		DefaultCaret processesCaret = (DefaultCaret)processesArea.getCaret(); //pozycja scrolla niezmieniana automatycznie
+		processesCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		Border processesBorder = BorderFactory.createTitledBorder("Processes");
 		processesPanel.setBorder(processesBorder);		
 		processesArea.setEditable(false);
@@ -218,13 +258,18 @@ public class ShellGUI extends JFrame
 		//registers
 		JPanel registersPanel = new JPanel();
 		registersPanel.setBackground(Color.GRAY);
+		DefaultCaret registersCaret = (DefaultCaret)registersArea.getCaret(); //pozycja scrolla niezmieniana automatycznie
+		registersCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		registersPanel.setLayout(new GridLayout(0,1));
 		Border registersBorder = BorderFactory.createTitledBorder("Registers");
 		registersPanel.setBorder(registersBorder);	
 		registersArea.setEditable(false);
 		JScrollPane registersScroll = new JScrollPane(registersArea);
 		registersPanel.add(registersScroll);
-
+		
+		
+		//AboutDialog rootWindow = new AboutDialog();
+		
 		/*memoryArea.setLineWrap(true);
 		memoryArea.setWrapStyleWord(true);
 		diskArea.setLineWrap(true);
@@ -234,17 +279,13 @@ public class ShellGUI extends JFrame
 		Globals.terminalArea.setLineWrap(true);
 		Globals.terminalArea.setWrapStyleWord(true);*/
 		
-		JButton but = new JButton("ggg");
-		//but.addActionListener(listener);
-		add(but, new GBC(0,0));
-		add(terminalPanel, new GBC(0,1,3,4).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 100));
+		add(terminalPanel, new GBC(0,0,3,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 100));
 		add(registersPanel, new GBC(3,0).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,50));
 		add(processesPanel, new GBC(3,1).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
 		add(memoryPanel, new GBC(3,2).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
 		add(diskPanel, new GBC(3,3).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
 		add(pipesPanel, new GBC(3,4).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,30));
 		add(inputPanel, new GBC(0,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 10));
-		
 		pack();
 		updateGUI();
 	}
@@ -382,15 +423,25 @@ public class ShellGUI extends JFrame
 				processManagment.create_process("P5", 30, "Prog5", memory);
 				break;
 			}*/
-			case("cp"): //TODO:
+			case("cp"):
 			{
 				Globals.terminalArea.append("Please enter the name of the process:\n");
-				String S1 = UserInput.readLine().trim();
+				String S1;
+				S1 = fileContent.showInputDialog("Please enter the name of the process: ");
+				if (S1==null) S1="";
+				
 				Globals.terminalArea.append("Please enter the size of the process:\n");
-				int size = Integer.parseInt(UserInput.readLine().trim());
+				String sizeS;
+				sizeS = fileContent.showInputDialog("Please enter the size of the process: ");
+				if (sizeS==null) sizeS="";
+				int size = Integer.parseInt(sizeS.trim());
+				
 				Globals.terminalArea.append("Please enter the name of the file with program:\n");
-				String S2 = UserInput.readLine().trim();
+				String S2;
+				S2 = fileContent.showInputDialog("Please enter the name of the file with program: ");
+				if (S2==null) S2="";
 				processManagment.create_process(S1, size, S2, memory);
+				
 				break;
 			}
 			default:
@@ -464,7 +515,6 @@ public class ShellGUI extends JFrame
 							
 						return;
 					}
-					System.out.println("Wrong Command");
 					Globals.terminalArea.append("Wrong Command\n");
 					return;
 				}	
@@ -472,7 +522,7 @@ public class ShellGUI extends JFrame
 			if(User_Command.charAt(0)=='l' && User_Command.charAt(1)=='s'  && User_Command.length() > 4 && User_Command.charAt(2)=='f')
 			{
 				if(User_Command.charAt(5) == 'r')
-				filesystem.showRootEntry(User_Command.substring(7));
+					Globals.terminalArea.append(filesystem.showRootEntry(User_Command.substring(7)));
 			}
 		}
 		
@@ -520,6 +570,7 @@ public class ShellGUI extends JFrame
 			//print memory
 			case("memo"):
 			{
+				MutexLock.printLocks();
 				Globals.terminalArea.append(memory.print() + '\n');
 				break;
 			}
@@ -533,6 +584,11 @@ public class ShellGUI extends JFrame
 			case("step"):
 			{
 				processormanager.Scheduler();
+				break;
+			}
+			case("kill"):
+			{
+				processormanager.Running.Setstan(2);
 				break;
 			}
 			case("wait"):

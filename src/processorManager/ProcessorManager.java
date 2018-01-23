@@ -362,7 +362,7 @@ public class ProcessorManager {
 		
 			interpreter.RUN(Running);//odpalanie interpretera
 		}
-		// showQueue();
+		 showQueue();
 		if(Running.getStan()==2)
 		{
 			Clear();
@@ -383,9 +383,10 @@ public class ProcessorManager {
 
 	public void showQueue() //metoda pomocnicza do testowania projektu 
 	{
-		Globals.terminalArea.append("\n\n");
+		Globals.terminalArea.append("\n");
 		Globals.terminalArea.append("Running:\n");
 		Globals.terminalArea.append("ID procesu: "+Running.getID() + "\n");
+		Globals.terminalArea.append("Ilosc kwantow czasu: "+Running.getLicznik_wykonanych_rozkazow() + "\n");
 		Globals.terminalArea.append("Priorytet procesu: "+Running.getPriorytet_dynamiczny() + "\n");
 		for(int i=15;i>=0;i--)
 		{
@@ -396,8 +397,9 @@ public class ProcessorManager {
 				{
 					
 						
-						Globals.terminalArea.append("\n\n");
+						Globals.terminalArea.append("\n");
 						Globals.terminalArea.append("ID procesu: "+lista.get(i).get(b).getID() + "\n");
+						Globals.terminalArea.append("Ilosc kwantow czasu: "+lista.get(i).get(b).getLicznik_wykonanych_rozkazow() + "\n");
 						Globals.terminalArea.append("Priorytet procesu: "+lista.get(i).get(b).getPriorytet_dynamiczny() + "\n");
 						
 
@@ -412,12 +414,12 @@ public class ProcessorManager {
 	public String showRunning() //pokazywanie aktualnie wykonywanego procesu
 	{
 		String result = "";
-		if(Running!=idleProcess)
+		/*if(Running!=idleProcess)
 		{
 			 Globals.terminalArea.append("\n\nAktualnie jest wykonywany proces, jego informacje to:  \n\n\n");
 			result += ("\n\nAktualnie jest wykonywany proces, jego informacje to:  \n\n"  + "\n");
 
-			 Running.print();
+			Globals.terminalArea.append(Running.print());
 			 
 			 result += Running.print();
 		}
@@ -425,8 +427,9 @@ public class ProcessorManager {
 		{
 			Globals.terminalArea.append("\n\nAktualnie nie ma procesu wykonywanego \n\n\n");
 			result += ("\n\nAktualnie nie ma procesu wykonywanego \n\n" + "\n");
-		}
+		}*/
 		return result;
+		
 	}
 	
 }
