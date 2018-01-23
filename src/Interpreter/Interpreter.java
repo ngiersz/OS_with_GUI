@@ -273,6 +273,17 @@ public class Interpreter {
 			break;
 
 		case "EX":
+			String result = "";
+			String name=Running.getName();
+			int licz=1;
+			result += ("A: " + processor.Get_A() + " ");
+			result += ("B: " + processor.Get_B() + " ");
+			result += ("C: " + processor.Get_C() + " ");
+			while(filesystem.createFile(name, result)==0) {
+				name=Running.getName();
+				name+=Integer.toString(licz);
+				licz++;
+			}
 			Running.Setstan(2);
 			Flag_End = true;
 			break;	
