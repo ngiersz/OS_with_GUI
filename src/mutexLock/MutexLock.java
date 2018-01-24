@@ -1,17 +1,13 @@
 package mutexLock;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
-import Communication.Pipe;
 import globals.Globals;
 import processManagement.process_control_block;
 
 public class MutexLock {
 	private Queue<process_control_block> queue;
-	private static List<Boolean> LocksState = new ArrayList<Boolean>();
 	public static int i=0;
 	public int ID;
 	private boolean isLocked;
@@ -22,7 +18,6 @@ public class MutexLock {
 		ID = i;
 		i++;
 		queue = new LinkedList<process_control_block>();
-		LocksState.add(isLocked);
 		locks.add(this);
 	}
 	
@@ -34,7 +29,6 @@ public class MutexLock {
 		//Jesli zamek jest odblokowany, ustaw aktualny proces w zamku na pcb i zamknij zamek
 		if(isLocked == false) {
 			isLocked = true;
-			LocksState.set(ID, isLocked);
 			currentProcess = pcb;
 			Globals.terminalArea.append("Locked lock with pcb: " + pcb.getID() + "\n");
 		}
@@ -62,7 +56,6 @@ public class MutexLock {
 				Globals.terminalArea.append("CurrentProcess value before checking queue: " + currentProcess.getID() + ". Queue is empty. Unlocking lock.\n");
 			isLocked = false;
 			currentProcess = null;
-			LocksState.set(ID, isLocked);
 		}
 		//Jesli kolejka nie jest pusta, wez kolejny proces z kolejki i zmien jego stan na gotowy
 		else {
@@ -78,7 +71,6 @@ public class MutexLock {
 		queue.add(pcb);
 		pcb.Setstan(1);
 	}
-	//Todo later
 	/*public void unlock(boolean isEmpty) {
 		//Jesli kolejka jest pusta, otworz zamek
 		if(queue.isEmpty()) {
@@ -91,7 +83,6 @@ public class MutexLock {
 	public void trylock(process_control_block pcb) {
 		if(isLocked == false) {
 			isLocked = true;
-			LocksState.set(ID, isLocked);
 			currentProcess = pcb;
 		}
 	}
