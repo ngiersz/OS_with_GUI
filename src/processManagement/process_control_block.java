@@ -236,10 +236,10 @@ public String print() {
 	Globals.terminalArea.append("R1: " + R1 + " R2: " + R2 + " R3: " +R3  + "\n");
 	Globals.terminalArea.append("Plik: " + file_name + "\n");*/
 	
-	result += ("Proces: " + this.Name + " ID: " + this.ID + "\n");
-	result += ("Priorytet: " + this.priorytet_dynamiczny + " Licznik wykonanych: " + this.licznik_rozkazow + " stan: " + this.stan + "\n");
+	result += ("Process: " + this.Name + " ID: " + this.ID + "\n");
+	result += ("Priority: " + this.priorytet_dynamiczny + " Command counter: " + this.licznik_rozkazow + " state: " + this.stan + "\n");
 	result += ("R1: " + R1 + " R2: " + R2 + " R3: " +R3  + "\n");
-	result += ("Plik: " + file_name + "\n");
+	result += ("File: " + file_name + "\n" + "Time Quant: " + this.licznik_wykonanych_rozkazow);
 	
 	return result;
 }

@@ -36,6 +36,7 @@ public class Communication
 		{	
 			if(Pipe.pipes.get(i).getName().equals(pipeName) ) 
 			{
+				Pipe.pipes.get(i).lock.isLive = false;
 				Pipe.pipes.remove(i);
 				Globals.terminalArea.append("Communication: Pipe deleted.\n");
 				return 1;

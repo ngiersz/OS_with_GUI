@@ -253,11 +253,13 @@ public class Interpreter {
 		case "RF": // Czytanie pliku
 			filesystem.openFile(P1,Running);
 			filesystem.readFile(P1);
+			filesystem.closeFile(P1);
 			break;
 			
 		case "RN": // Czytanie n znakow z pliku
 			filesystem.openFile(P1,Running);
-			filesystem.readFile(P1,GetValue(P2));
+			filesystem.readFile(P1,Integer.parseInt(P2));
+			filesystem.closeFile(P1);
 			break;
 			
 //-----------------------------------------------------------------------	JUMPY I KONCZENIE

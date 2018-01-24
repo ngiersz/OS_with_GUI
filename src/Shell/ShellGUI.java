@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import Interpreter.Interpreter;
 import processManagement.process_control_block;
 import processManagement.ProcessManagment;
+import processManagement.lista_procesow;
 import processorManager.ProcessorManager;
 import Communication.Communication;
 
@@ -141,11 +142,12 @@ public class ShellGUI extends JFrame
 		//terminal
 		JPanel terminalPanel = new JPanel();
 		terminalPanel.setBackground(Color.GRAY);
-		DefaultCaret terminalCaret = (DefaultCaret)Globals.terminalArea.getCaret(); //aktualizowanie pozycji przy pojawienu sie nowego tekstu
-		terminalCaret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		int len = Globals.terminalArea.getDocument().getLength();
+		Globals.terminalArea.setCaretPosition(len);
 		terminalPanel.setLayout(new GridLayout(0,1));
 		Border terminalBorder = BorderFactory.createTitledBorder("Terminal");
 		terminalPanel.setBorder(terminalBorder);	
+	    Globals.terminalArea.setEditable(false);
 		JScrollPane terminalScroll = new JScrollPane(Globals.terminalArea);
 		terminalPanel.add(terminalScroll);
 
@@ -288,8 +290,23 @@ public class ShellGUI extends JFrame
 		add(inputPanel, new GBC(0,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 10));
 		pack();
 		updateGUI();
-	}
+		Globals.terminalArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize+5));
+		Globals.terminalArea.append("		 ________  __                                       ______    ______  \r\n" + 
+				"		/        |/  |                                     /      \\  /      \\ \r\n" + 
+				"		$$$$$$$$/ $$/   ______    ______    ______        /$$$$$$  |/$$$$$$  |\r\n" + 
+				"		   $$ |   /  | /      \\  /      \\  /      \\       $$ |  $$ |$$ \\__$$/ \r\n" + 
+				"		   $$ |   $$ |/$$$$$$  |/$$$$$$  |/$$$$$$  |      $$ |  $$ |$$      \\ \r\n" + 
+				"		   $$ |   $$ |$$ |  $$ |$$    $$ |$$ |  $$/       $$ |  $$ | $$$$$$  |\r\n" + 
+				"		   $$ |   $$ |$$ \\__$$ |$$$$$$$$/ $$ |            $$ \\__$$ |/  \\__$$ |\r\n" + 
+				"		   $$ |   $$ |$$    $$ |$$       |$$ |            $$    $$/ $$    $$/ \r\n" + 
+				"		   $$/    $$/  $$$$$$$ | $$$$$$$/ $$/              $$$$$$/   $$$$$$/  \r\n" + 
+				"		              /  \\__$$ |                                              \r\n" + 
+				"		              $$    $$/                                               \r\n" + 
+				"		               $$$$$$/                                                \n");
 	
+	}
+
+
 	public void updateGUI()
 	{
 		memoryArea.setText(memory.print());
@@ -307,7 +324,8 @@ public class ShellGUI extends JFrame
 		disk += filesystem.showBitVector();
 		diskArea.setText(disk);
 		//memoryArea.repaint();
-		
+		int len = Globals.terminalArea.getDocument().getLength();
+		Globals.terminalArea.setCaretPosition(len);
 		
 
 	}
@@ -401,17 +419,17 @@ public class ShellGUI extends JFrame
 			case("p1"):
 			{
 				processManagment.create_process("P1", 60,  "Prog1", memory);
-				break;
+				return;
 			}
 			case("p2"):
 			{
 				processManagment.create_process("P2", 60, "Prog2", memory);
-				break;
+				return;
 			}
 			case("p3"):
 			{
 				processManagment.create_process("P3", 50, "Prog3", memory);
-				break;
+				return;
 			}
 			/*case("p4"):
 			{
@@ -442,11 +460,11 @@ public class ShellGUI extends JFrame
 				if (S2==null) S2="";
 				processManagment.create_process(S1, size, S2, memory);
 				
-				break;
+				return;
 			}
 			default:
 			{
-				Globals.terminalArea.append("Wrong Command\n");
+				
 			}	
 		}
 		}
@@ -458,11 +476,11 @@ public class ShellGUI extends JFrame
 			case("lsf"):
 			{
 				Globals.terminalArea.append(filesystem.showMainCatalog() + "\n");
-				break;
+				return;
 			}
 			default:
 			{
-				Globals.terminalArea.append("Wrong Command\n");
+				
 			}
 		}
 		}
@@ -522,7 +540,8 @@ public class ShellGUI extends JFrame
 			if(User_Command.charAt(0)=='l' && User_Command.charAt(1)=='s'  && User_Command.length() > 4 && User_Command.charAt(2)=='f')
 			{
 				if(User_Command.charAt(5) == 'r')
-					Globals.terminalArea.append(filesystem.showRootEntry(User_Command.substring(7)));
+					{Globals.terminalArea.append(filesystem.showRootEntry(User_Command.substring(7)));
+				return;}
 			}
 		}
 		
@@ -534,62 +553,75 @@ public class ShellGUI extends JFrame
 			{
 				Globals.terminalArea.append("Commands:\n");
 				
-				Globals.terminalArea.append("p1   load Prog1 as P1 with size of 60\n");
-				Globals.terminalArea.append("p2   load Prog2 as P2 with size of 60\n");
-				Globals.terminalArea.append("p3   load Prog3 as P3 with size of 50\n\n");
+				Globals.terminalArea.append("p1\t\tload Prog1 as P1 with size of 60\n");
+				Globals.terminalArea.append("p2\t\tload Prog2 as P2 with size of 60\n");
+				Globals.terminalArea.append("p3\t\tload Prog3 as P3 with size of 50\n\n");
 				
-				Globals.terminalArea.append("cp   load program and fill in variables\n");
-				Globals.terminalArea.append("cp x y z    load z as x with size of y\n\n");
-				Globals.terminalArea.append("lsf   display root");
-				Globals.terminalArea.append("lsf -r   displays specific root entry\n");
+				Globals.terminalArea.append("cp\t\tload program and fill in variables\n");
+				Globals.terminalArea.append("cp x y z\tload z as x with size of y\n\n");
+				Globals.terminalArea.append("lsf\t\tdisplay root\n");
+				Globals.terminalArea.append("lsf -r\t\tdisplays specific root entry\n");
 				
-				Globals.terminalArea.append("\ncf  x   create file x\n");
-				Globals.terminalArea.append("cf -e x   create empty file x\n\n");
-				Globals.terminalArea.append("rmf x   remove file x\n\n");
+				Globals.terminalArea.append("\ncf  x\t\tcreate file x\n");
+				Globals.terminalArea.append("cf -e x\t\tcreate empty file x\n\n");
+				Globals.terminalArea.append("rmf x\t\tremove file x\n\n");
 				
 				
-				Globals.terminalArea.append("memo   display memory status\n");
-				Globals.terminalArea.append("regs   display registers\n");
-				Globals.terminalArea.append("step   execute one command\n");
+				Globals.terminalArea.append("memo\t\tdisplay memory status\n");
+				Globals.terminalArea.append("kill\t\tkill running process\n");
+				Globals.terminalArea.append("kill id\t\tkill process by ID\n");
+				Globals.terminalArea.append("regs\t\tdisplay registers\n");
+				Globals.terminalArea.append("step\t\texecute one command\n");
+				Globals.terminalArea.append("read name\t\tshow content of the file\n");
+				Globals.terminalArea.append("wait\t\texecute commands until one program ends\n");
+				Globals.terminalArea.append("pipe\t\tdisplays all pipes\n");
+				Globals.terminalArea.append("\nlsp -a\t\tlists all processes\n");
+				Globals.terminalArea.append("lsp -c\t\tlists current process\n");
+				Globals.terminalArea.append("lsp -r\t\tlists ready processes\n");
+				Globals.terminalArea.append("lsp -w\t\tlists waiting processes\n\n");
 				
-				Globals.terminalArea.append("wait   execute commands until one program ends\n");
-				Globals.terminalArea.append("pipe   displays all pipes\n");
-				Globals.terminalArea.append("\nlsp -a   lists all processes\n");
-				Globals.terminalArea.append("lsp -c   lists current process\n");
-				Globals.terminalArea.append("lsp -r   lists ready processes\n");
-				Globals.terminalArea.append("lsp -w   lists waiting processes\n\n");
-				
-				Globals.terminalArea.append("\ndisk -a   displays FAT table, bit vector, data currently on disk and free and taken memory\n");
-				Globals.terminalArea.append("disk -f   displays FAT table\n");
-				Globals.terminalArea.append("disk -d   displays data currently on disk\n");
-				Globals.terminalArea.append("disk -b   displays bit vector\n");
-				Globals.terminalArea.append("disk -m   displays the usage of the memory\n");
-				Globals.terminalArea.append("disk -s   displays the content of one block\n\n");
-				break;
+				Globals.terminalArea.append("\ndisk -a\t\tdisplays FAT table, bit vector, data currently on disk and free and taken memory\n");
+				Globals.terminalArea.append("disk -f\t\tdisplays FAT table\n");
+				Globals.terminalArea.append("disk -d\t\tdisplays data currently on disk\n");
+				Globals.terminalArea.append("disk -b\t\tdisplays bit vector\n");
+				Globals.terminalArea.append("disk -m\t\tdisplays the usage of the memory\n");
+				Globals.terminalArea.append("disk -s\t\tdisplays the content of one block\n\n");
+				return;
 			}
 			//print memory
+			case("lock"):
+			{
+				MutexLock.showLocks();
+			
+				return;
+			}
 			case("memo"):
 			{
-				MutexLock.printLocks();
 				Globals.terminalArea.append(memory.print() + '\n');
-				break;
+				return;
 			}
 			//show registers
 			case("regs"):
 			{
 				Globals.terminalArea.append(interpreter.Show_Regs() + '\n');
-				break;
+				return;
 			}
 			//1 step on processor
 			case("step"):
 			{
 				processormanager.Scheduler();
-				break;
+				return;
 			}
 			case("kill"):
 			{
+				if(processormanager.Running.getID() == 0)
+				{
+					Globals.terminalArea.append("Killing idle process is forbidden." + '\n');
+					processormanager.Clear();
+					return;
+				}
 				processormanager.Running.Setstan(2);
-				break;
+				return;
 			}
 			case("wait"):
 			{
@@ -599,18 +631,52 @@ public class ShellGUI extends JFrame
 					if(processormanager.Running.getID()==0) break;
 				}
 				interpreter.Flag_End = false;
-				break;
+				return;
 			}
 			case("pipe"):
 			{
 				Globals.terminalArea.append(Communication.showAllPipes() + '\n');
-				break;
+				return;
 			}
 			default:
 			{
-				Globals.terminalArea.append("Wrong Command\n");
+				
 			}
 		}
+		}
+		
+		if(User_Command.length() > 4 && User_Command.charAt(0)=='k' && User_Command.charAt(1)=='i' && User_Command.charAt(2)=='l' && User_Command.charAt(3)=='l' )
+		{
+			int id = Integer.parseInt(User_Command.substring(5));
+			if(processManagment.getIstniejaceProcesy().getPCB_by_ID(id)!=null && id != 0)
+			{
+				processManagment.getIstniejaceProcesy().getPCB_by_ID(id).Setstan(2);
+			}
+			else if (id==0) Globals.terminalArea.append("Killing idle process is forbidden"); else Globals.terminalArea.append("No such process exists\n");
+			processormanager.Clear();
+			return;
+		}
+		if(User_Command.length() > 4 && User_Command.charAt(0)=='r' && User_Command.charAt(1)=='e' && User_Command.charAt(2)=='a' && User_Command.charAt(3)=='d' )
+		{
+			
+			filesystem.readFile(User_Command.substring(5));
+			
+			return;
+			
+		}
+		if(User_Command.length() > 4 && User_Command.charAt(0)=='o' && User_Command.charAt(1)=='p' && User_Command.charAt(2)=='e' && User_Command.charAt(3)=='n' )
+		{
+			filesystem.openFileWithOutProcess(User_Command.substring(5));
+			
+			return;
+			
+		}
+		if(User_Command.length() > 5 && User_Command.charAt(0)=='c' && User_Command.charAt(1)=='l' && User_Command.charAt(2)=='o' && User_Command.charAt(3)=='s' && User_Command.charAt(4)=='e' )
+		{
+			filesystem.closeFileWithOutProcess(User_Command.substring(6));
+			
+			return;
+			
 		}
 		
 		if(User_Command.length() == 6)
@@ -625,27 +691,26 @@ public class ShellGUI extends JFrame
 				case('c'):
 				{
 					Globals.terminalArea.append(processormanager.showRunning() + '\n');
-					break;
+					return;
 				}
 				case('r'):
 				{
 					Globals.terminalArea.append(processManagment.print_procesy_gotowe() + '\n');
-					break;
+					return;
 				}
 				case('w'):
 				{
 					Globals.terminalArea.append(processManagment.print_procesy_oczekujace() + '\n');
-					break;
+					return;
 				}
 				case('a'):
 				{
 					Globals.terminalArea.append(processManagment.print_procesy() + '\n');
-					break;
+					return;
 				}
 				default:
 				{
-					Globals.terminalArea.append("Wrong Command\n");
-					break;
+					
 				}
 			}
 			}	
@@ -667,26 +732,26 @@ public class ShellGUI extends JFrame
 				{
 					//print FAT table
 					Globals.terminalArea.append(filesystem.showFAT() + '\n');
-					break;
+					return;
 				}
 				case('d'):
 				{
 					//print data on disk
 					Globals.terminalArea.append(filesystem.showData() + '\n');
-					break;
+					return;
 				}
 				case('b'):
 				{
 					//show bitVector
 					Globals.terminalArea.append(filesystem.showBitVector() + '\n');
-					break;
+					return;
 				}
 				case('m'):
 				{
 					//show memory usage
 					Globals.terminalArea.append("Free memory: " + 32*filesystem.numberOfFreeBlocks() + '\n');
 					Globals.terminalArea.append("Memory used: " + 32*(32 - filesystem.numberOfFreeBlocks()) + '\n');
-					break;	
+					return;
 				}
 				/*case('r'):
 				{
@@ -697,7 +762,7 @@ public class ShellGUI extends JFrame
 				{
 					int x = Integer.parseInt(User_Command.substring(8));
 					Globals.terminalArea.append(filesystem.showBlockContent(x) + '\n');
-					break;
+					return;
 				}
 				case('a'):
 				{
@@ -706,11 +771,11 @@ public class ShellGUI extends JFrame
 					Globals.terminalArea.append(filesystem.showFAT() + '\n');
 					Globals.terminalArea.append(filesystem.showData() + '\n');
 					Globals.terminalArea.append(filesystem.showBitVector() + '\n');
-					break;
+					return;
 				}
 				default:
 				{
-					Globals.terminalArea.append("Wrong Command\n");
+					
 				}
 				}
 			}
@@ -752,10 +817,12 @@ public class ShellGUI extends JFrame
 			//System.out.println(size);
 			//System.out.println(S3);
 			processManagment.create_process(S1.substring(1), size, S3, memory);
-			
+			return;
 			
 		}
 		
+		
+		Globals.terminalArea.append("Wrong Command\n");
 		
 		
 	}

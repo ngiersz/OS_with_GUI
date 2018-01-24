@@ -110,7 +110,7 @@ public class ProcessorManager {
 			
 			for(int i=15;i>7;i--)//sprawdzanie jesli Running jest czasu rzeczywistego
 			{
-				if(arr[i]==true)
+				  if(lista.get(i).size()>0)
 				{
 					NextRunningProcess=lista.get(i).get(0);
 					
@@ -176,7 +176,7 @@ public class ProcessorManager {
 		for(int i=8;i>=0;i--)//sprawdzanie tylko dla priorytetow 1-7
 		{
 			
-			if(arr[i]==true)
+			  if(lista.get(i).size()>0)
 			{
 				for(int b=lista.get(i).size()-1;b>=0;b--)
 				{
@@ -201,7 +201,7 @@ public class ProcessorManager {
 	public void IncreaseCounter()
 	{
 
-		for(int i=7;i>0;i--)//sprawdzanie tylko dla priorytetow 1-7
+		for(int i=6;i>0;i--)//sprawdzanie tylko dla priorytetow 1-7
 		{
 			
 			if(lista.get(i).size()>0)
@@ -260,7 +260,7 @@ public class ProcessorManager {
 				break;
 			}
 			
-			if(arr[temp1.getPriorytet_dynamiczny()]==false)
+			if(lista.get(temp1.getPriorytet_dynamiczny()).size()==0)
 			{
 				if(temp1.getPriorytet_bazowy()==0)
 				{
@@ -352,17 +352,15 @@ public class ProcessorManager {
 		{
 			
 			
-			CheckBiggest();
-			
-			if(Running.getPriorytet_dynamiczny()<NextRunningProcess.getPriorytet_dynamiczny()) {
-				
-				changerunningProcess();
-			}
+		    if(CheckBiggest()) {
+	               
+                changerunningProcess();
+            }
 			
 		
 			interpreter.RUN(Running);//odpalanie interpretera
 		}
-		 showQueue();
+		// showQueue();
 		if(Running.getStan()==2)
 		{
 			Clear();
@@ -414,7 +412,7 @@ public class ProcessorManager {
 	public String showRunning() //pokazywanie aktualnie wykonywanego procesu
 	{
 		String result = "";
-		/*if(Running!=idleProcess)
+		if(Running!=idleProcess)
 		{
 			 Globals.terminalArea.append("\n\nAktualnie jest wykonywany proces, jego informacje to:  \n\n\n");
 			result += ("\n\nAktualnie jest wykonywany proces, jego informacje to:  \n\n"  + "\n");
@@ -425,9 +423,11 @@ public class ProcessorManager {
 		}
 		else
 		{
-			Globals.terminalArea.append("\n\nAktualnie nie ma procesu wykonywanego \n\n\n");
+			Globals.terminalArea.append("\n\nAktualnie wykonywany jest proces bezczynnosci\n\n\n");
 			result += ("\n\nAktualnie nie ma procesu wykonywanego \n\n" + "\n");
-		}*/
+			Globals.terminalArea.append(Running.print());
+			result += Running.print();
+		}
 		return result;
 		
 	}

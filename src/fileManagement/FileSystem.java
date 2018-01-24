@@ -117,6 +117,7 @@ public class FileSystem {
 				mainCatalog.get(i).open = false;
 				Globals.terminalArea.append("FileSystem: File " + name + " closed.\n");
 				increaseNumberOfReadChars(name, 0);
+				mainCatalog.get(i).readChars = 0;
 				break;
 			}
 		}
@@ -259,6 +260,7 @@ public class FileSystem {
 	private void removeDirectoryEntry(String name) {
 		for (int i = 0; i < mainCatalog.size(); i++) {
 			if (mainCatalog.get(i).name.equals(name)) {
+				mainCatalog.get(i).lock.isLive = false;
 				mainCatalog.remove(i);
 			}
 		}
