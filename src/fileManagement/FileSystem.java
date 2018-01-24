@@ -260,7 +260,7 @@ public class FileSystem {
 	private void removeDirectoryEntry(String name) {
 		for (int i = 0; i < mainCatalog.size(); i++) {
 			if (mainCatalog.get(i).name.equals(name)) {
-				mainCatalog.get(i).lock.isLive = false;
+				MutexLock.deleteLock(mainCatalog.get(i).lock.ID);
 				mainCatalog.remove(i);
 			}
 		}

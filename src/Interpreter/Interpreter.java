@@ -4,6 +4,7 @@ package Interpreter;
 import java.util.ArrayList;
 
 import fileManagement.FileSystem;
+import globals.Globals;
 import memoryManagement.Memory;
 import Communication.Communication;
 import processManagement.ProcessManagment;
@@ -401,6 +402,7 @@ public class Interpreter {
 		}while (Instruction.charAt(Counter)!=',' && Instruction.charAt(Counter)!=';');
 		Instruction = Instruction.trim();
 		System.out.println(Instruction);
+		Globals.lastCommandField.setText(Instruction);
 		return Instruction;
 	}
 	

@@ -151,6 +151,15 @@ public class ShellGUI extends JFrame
 		JScrollPane terminalScroll = new JScrollPane(Globals.terminalArea);
 		terminalPanel.add(terminalScroll);
 
+		//last command
+		JPanel lastCommandPanel = new JPanel();
+		lastCommandPanel.setBackground(Color.GRAY);
+		lastCommandPanel.setLayout(new GridLayout(0,1));
+		Border lastCommandBorder = BorderFactory.createTitledBorder("Last Command");
+		lastCommandPanel.setBorder(lastCommandBorder);	
+		Globals.lastCommandField.setEditable(false);
+		lastCommandPanel.add(Globals.lastCommandField);
+		
 		this.getContentPane().setBackground(Color.gray);
 		
 		Globals.terminalArea.setBackground(Color.BLACK);
@@ -180,6 +189,10 @@ public class ShellGUI extends JFrame
 		inputField.setBackground(Color.BLACK);
 		inputField.setForeground(Color.YELLOW);
 		inputField.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
+		
+		Globals.lastCommandField.setBackground(Color.BLACK);
+		Globals.lastCommandField.setForeground(Color.YELLOW);
+		Globals.lastCommandField.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize));
 		
 		//input listener
 		inputListener = new AbstractAction("Input")
@@ -282,12 +295,14 @@ public class ShellGUI extends JFrame
 		Globals.terminalArea.setWrapStyleWord(true);*/
 		
 		add(terminalPanel, new GBC(0,0,3,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 100));
-		add(registersPanel, new GBC(3,0).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,50));
+		add(registersPanel, new GBC(3,0).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,60));
 		add(processesPanel, new GBC(3,1).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
 		add(memoryPanel, new GBC(3,2).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
-		add(diskPanel, new GBC(3,3).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,100));
+		add(diskPanel, new GBC(3,3).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(70,100));
 		add(pipesPanel, new GBC(3,4).setAnchor(GBC.NORTH).setFill(GBC.BOTH).setWeight(50,30));
 		add(inputPanel, new GBC(0,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(100, 10));
+		add(lastCommandPanel, new GBC(3,5).setAnchor(GBC.CENTER).setFill(GBC.BOTH).setWeight(50, 10));
+
 		pack();
 		updateGUI();
 		Globals.terminalArea.setFont(new Font(Font.MONOSPACED, Font.BOLD, fontSize+5));
@@ -317,6 +332,7 @@ public class ShellGUI extends JFrame
 		
 		//show disk
 		String disk = "";
+		disk += filesystem.showMainCatalog();
 		disk += ("Free memory: " + 32*filesystem.numberOfFreeBlocks() + "\n");
 		disk += ("Memory used: " + 32*(32 - filesystem.numberOfFreeBlocks()) + "\n");
 		disk += filesystem.showFAT();

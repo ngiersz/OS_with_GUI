@@ -15,16 +15,13 @@ public class MutexLock {
 	public static int i=0;
 	public int ID;
 	private boolean isLocked;
-	public boolean isLive =true;
 	private process_control_block currentProcess;
 	protected static LinkedList<MutexLock> locks = new LinkedList<MutexLock>();
 	
 	public MutexLock() {
-		isLocked=false;
 		ID = i;
 		i++;
 		queue = new LinkedList<process_control_block>();
-		isLive = true;
 		LocksState.add(isLocked);
 		locks.add(this);
 	}
@@ -32,13 +29,6 @@ public class MutexLock {
 	public boolean isLocked() {
 		return isLocked;
 	}
-	
-	/*public static void printLocks() {
-		Globals.terminalArea.append("Locks states: \n");
-		for(int i=0;i<LocksState.size();i++) {
-			if(Globals.terminalArea.append("Lock" + i + ": " + LocksState.get(i) + "\n");
-		}
-	}*/
 	
 	public void lock(process_control_block pcb) {
 		//Jesli zamek jest odblokowany, ustaw aktualny proces w zamku na pcb i zamknij zamek
@@ -108,7 +98,14 @@ public class MutexLock {
 	public static void showLocks() {
 		Globals.terminalArea.append("Locks states: \n");
 		for(int j=0;j<locks.size();j++) {
-			 if(locks.get(j).isLive)Globals.terminalArea.append("Lock" + locks.get(j).ID  + ": "  + " " +  locks.get(j).isLocked() + "\n");
+			 Globals.terminalArea.append("Lock" + locks.get(j).ID  + ": "  + " " +  locks.get(j).isLocked() + "\n");
+
+		}
+	}
+
+	public static void deleteLock(int ID) {
+		for(int j=0;j<locks.size();j++) {
+			 if(locks.get(j).ID == ID) MutexLock.locks.remove(j);
 		}
 	}
 }

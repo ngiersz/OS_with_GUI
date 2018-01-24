@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import globals.Globals;
+import mutexLock.MutexLock;
 import processManagement.process_control_block;
 
 public class Communication
@@ -36,7 +37,7 @@ public class Communication
 		{	
 			if(Pipe.pipes.get(i).getName().equals(pipeName) ) 
 			{
-				Pipe.pipes.get(i).lock.isLive = false;
+				MutexLock.deleteLock(Pipe.pipes.get(i).lock.ID);
 				Pipe.pipes.remove(i);
 				Globals.terminalArea.append("Communication: Pipe deleted.\n");
 				return 1;
