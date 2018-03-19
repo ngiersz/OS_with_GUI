@@ -14,27 +14,14 @@ public class Memory {
 		for(int i=0;i<(RAM_SIZE/FRAME_SIZE);i++) {
 			freeFrames[i]=true;
 		}
-//		initVirtualMemory();
 	}
-	
-	private void initVirtualMemory() {
-		ArrayList<Character> temp = new ArrayList<Character>(FRAME_SIZE);
-		for(int i=0;i<FRAME_SIZE;i++)
-			temp.add(' ');		
-		for(int i=0;i<2;i++) {			
-			virtualMemory.add(temp);
-		}		
-	}
-	
+
 	public String print() {
 		//System.out.println("RAM:");
 		String result = "RAM:\n";
 		result+=printRAM();
 		result+=printVirtualMemory();;
 		result+=printFIFO();;
-		//printRAM();
-		//printVirtualMemory();
-		//printFIFO();
 		return result;
 	}
 	
@@ -46,7 +33,6 @@ public class Memory {
 			result+="\n";
 		}
 		result+= "\n";
-		//printRAMCharacteristics();
 		result+=printRAMCharacteristics();
 		return result;
 	}
@@ -73,7 +59,6 @@ public class Memory {
 	}
 	
 	protected void writeToVirualMemory(int virtualBase, char[] program, int processSize) {
-	//	System.out.println("vbase = " + virtualBase);
 		int pagesRequired;
 		
 		if(processSize%FRAME_SIZE==0)
@@ -81,7 +66,6 @@ public class Memory {
 		else
 			pagesRequired=processSize/FRAME_SIZE+1;
 		ArrayList<Character> tempFrame;
-	//	for(int i=virtualBase;i<PageTable.pagesRequired;i++) { // TODO:PageTable obecnie wykonywanego procesu
 		for(int i=0;i<pagesRequired;i++) { // TODO:PageTable obecnie wykonywanego procesu
 			tempFrame = new ArrayList<Character>(FRAME_SIZE);
 			if(i==pagesRequired-1) {
@@ -121,12 +105,8 @@ public class Memory {
 	}
 	
 	protected void writeFrameToRAM(int frameVirtual, int frameRAM) {
-	//	System.out.println("MEMORY: frameVirtual = " + frameVirtual);
-	//	System.out.println("MEMORY: frameRAM = " + frameRAM);
-		for(int i=0;i<FRAME_SIZE;i++) {
+		for(int i=0;i<FRAME_SIZE;i++)
 			RAM[frameRAM*FRAME_SIZE+i] = virtualMemory.get(frameVirtual).get(i);	
-	//		System.out.println("MEMORY - zapisywane do RAM: " +  virtualMemory.get(frameVirtual).get(i) + " do " + (Integer)(frameRAM*FRAME_SIZE+i));
-		}
 		freeFrames[frameRAM] = false;
 	}
 	
@@ -147,30 +127,16 @@ public class Memory {
 	}	
 	
 	protected void rewriteFromRAMToVirtualMemory(int frameRAM, int frameVirtual) {
-	/*	System.out.println("----------------------rewriteFromRAMToVirtualMemory----------------------");
-		System.out.println("frameVirtualToRewrite = " + frameVirtual);
-		System.out.println("frameRAM = " + frameRAM);
-*/
-		// TODO?
-//		frameVirtual = frameRAM;
 		ArrayList<Character> temp = new ArrayList<Character>();
 		for(int i=0;i<FRAME_SIZE;i++)
 			temp.add(RAM[FRAME_SIZE*frameRAM+i]);
-		
-//		System.out.println("do VirtualMemory dodano na " + (Integer)(frameVirtual) + " miejsce");
 		virtualMemory.set(frameVirtual, temp);
 	}
 	
 	protected void rewriteFromRAMToVirtualMemoryOfOtherProcess(int frameRAM, int frameVirtual, int virtualBase) {
-/*		System.out.println("----------------------rewriteFromRAMToVirtualMemory----------------------");
-		System.out.println("frameVirtualToRewrite = " + frameVirtual);
-		System.out.println("frameRAM = " + frameRAM);
-*/	//	frameVirtual = frameRAM;
 		ArrayList<Character> temp = new ArrayList<Character>();
 		for(int i=0;i<FRAME_SIZE;i++)
 			temp.add(RAM[FRAME_SIZE*frameRAM+i]);
-		
-//		System.out.println("do VirtualMemory dodano na " + (Integer)(frameVirtual-virtualBase) + " miejsce");
 		virtualMemory.set(frameVirtual-virtualBase, temp);
 	}
 	
@@ -179,7 +145,6 @@ public class Memory {
 		RAM[index] = character;
 	}
 	
-	// Memory
 	public void clearPageFromRAM(int frame) {
 	        for(int i=0;i<FRAME_SIZE;i++)
 	            RAM[frame*FRAME_SIZE+i] = ' ';
