@@ -85,20 +85,16 @@ public class PageTable {
 			if (!file.exists()) {
 				System.out.println(fileName + " does not exist.");
 				throw new Exception();
-		//		return;
 			}
 			if (!(file.isFile() && file.canRead())) {
 				System.out.println(file.getName() + " cannot be read from.");
 				throw new Exception();
-		//		return;
 			}
 			try {
 				FileInputStream fis = new FileInputStream(file);
 				if(processSize<fis.available()) {
 					System.out.println("process size is too small");
-					throw new Exception();
-			//		return;
-				}
+					throw new Exception();				}
 				char current;
 				while (logicalAdress < processSize) {
 					current = (char) fis.read();
@@ -130,7 +126,6 @@ public class PageTable {
 
 	public  char readFromMemory(int logicalAdress, int ID) {
 		if(isFrameInRAM(getVirtualFrame(logicalAdress))) {
-			// TODO: set bit innego procesu		
 			int frameRAM = frameNumber[getVirtualFrame(logicalAdress)];
 			for(FIFOFrame e : memory.FIFO)
 				if(e.ID == ID && e.number == frameRAM)
@@ -138,7 +133,6 @@ public class PageTable {
 			return getCharFromRAM(logicalAdress);
 		}
 		else {
-//			System.out.println("PAGETABLE: readFromMemory: logicalAdress = " + logicalAdress + "; virtualBase = " + virtualBase + "; ID = " + ID);
 			writeFrameToRAM(getVirtualFrame(logicalAdress)+virtualBase, ID);
 			return getCharFromRAM(logicalAdress);
 		}
@@ -165,7 +159,6 @@ public class PageTable {
 	}
 	
 	private void writeFrameToRAM(int frameVirtual, int ID) {
-	//	System.out.println("WRITEFRAMETORAM frameVirtual = " + frameVirtual);
 		int frameLogical = frameVirtual - virtualBase;
 		if(memory.isFreeFrame()) {
 			int frameRAM = memory.firstFreeFrame();
@@ -175,54 +168,35 @@ public class PageTable {
 			addFrameToFIFO(frameRAM, ID); //????
 		}
 		else {
-//			System.out.println("PAGETABLE: !isFreeFrame() - DRUGA SZANSA");
 			int victimFrameFIFOIndex = getVictimFrame();
-	//		System.out.println("victimFrameFIFOIndex = " + victimFrameFIFOIndex);
 			int frameRAM = memory.FIFO.get(victimFrameFIFOIndex).number;
 			int IDVictim = memory.FIFO.get(victimFrameFIFOIndex).ID;	
 			int virtualBase = ProcessManagment.getPCB(IDVictim).pageTable.virtualBase;
-/*			System.out.print("printMEMORY: ");
-			memory.print();
-			System.out.println("VICTIM: frameRAM = " + frameRAM + "; IDVictim = " + IDVictim);
-			System.out.println("print page table victim:");
-			ProcessManagment.getPCB(IDVictim).pageTable.print();
-*/			if(isPageInCurrentProcess(IDVictim, ID))
+
+			if(isPageInCurrentProcess(IDVictim, ID))
 				removeEverythingAboutPageOfCurrentProcessFromRAM(frameRAM, IDVictim);
 			else
-				// TODO: usun z pagetable innego procesu - nieprzetestowane
 				removeEverythingAboutPageOfOtherProcessFromRAM(frameRAM, IDVictim);
 			memory.FIFO.remove(victimFrameFIFOIndex);
-//			System.out.println("VICTIM REMOVED");
-//			memory.print();
 			memory.writeFrameToRAM(frameVirtual, frameRAM);
 			addEverythingAboutPageOfCurrentProcessToRAM(frameVirtual, frameRAM, ID);
-//			System.out.println("END DRUGA SZANSA");
 		}
 	}
 	
 	private void removeEverythingAboutPageOfCurrentProcessFromRAM(int frameRAM, int ID) {
-		// dodac virtualBase do framevirt to rewrite (chyba?)
-//		System.out.println("----removeEverythingAboutPageOfOtherProcessFromRAM----");		
-		// from RAM to virtual
-	//	int frameVirtualToRewrite = frameNumber[frameRAM];
 		int index = 0;
 		Boolean done = false;
 		while(!done) {
-			if(ProcessManagment.getPCB(ID).pageTable.frameNumber[index]==frameRAM) {
-//				System.out.println("INDEX w frameNumber = " + index);
+			if(ProcessManagment.getPCB(ID).pageTable.frameNumber[index]==frameRAM)
 				done = true;
-			}
 			else
 				index++;
 		}
 		int frameVirtualToRewrite = index + ProcessManagment.getPCB(ID).pageTable.virtualBase;
-//		System.out.println("frameVirtualToRewrite = " + frameVirtualToRewrite);
 		if(frameVirtualToRewrite != -1) {
 			frameVirtualToRewrite+=ProcessManagment.getPCB(ID).pageTable.virtualBase;
-	//		memory.rewriteFromRAMToVirtualMemory(frameVirtualToRewrite, getVirtualFrameOfOtherProcess());
 			memory.rewriteFromRAMToVirtualMemory(frameRAM, frameVirtualToRewrite);
 		}
-		//frameNumber, inRAM
 		int indexOfFrameToClear = 0;
 		for(int i=0; i<frameNumber.length; i++) {
 			if(frameNumber[indexOfFrameToClear]==frameRAM) 
@@ -236,28 +210,18 @@ public class PageTable {
 	
 
 	private void removeEverythingAboutPageOfOtherProcessFromRAM(int frameRAM, int ID) {
-		// from RAM to virtual
-//		System.out.println("----removeEverythingAboutPageOfOtherProcessFromRAM----");
 		ProcessManagment.getPCB(ID).pageTable.print();
-//		int frameVirtualToRewrite = ProcessManagment.getPCB(ID).pageTable.frameNumber[frameRAM];
 		int index = 0;
 		Boolean done = false;
 		while(!done) {
-			if(ProcessManagment.getPCB(ID).pageTable.frameNumber[index]==frameRAM) {
-//				System.out.println("INDEX w frameNumber = " + index);
+			if(ProcessManagment.getPCB(ID).pageTable.frameNumber[index]==frameRAM)
 				done = true;
-			}
 			else
 				index++;
 		}
 		int frameVirtualToRewrite = index + ProcessManagment.getPCB(ID).pageTable.virtualBase;
-//		System.out.println("frameVirtualToRewrite = " + frameVirtualToRewrite);
-		if(frameVirtualToRewrite != -1) {
-	//		memory.rewriteFromRAMToVirtualMemoryOfOtherProcess(frameVirtualToRewrite, getVirtualFrameOfOtherProcess(), ProcessManagment.getPCB(ID).pageTable.virtualBase);
-	//		frameVirtualToRewrite+=ProcessManagment.getPCB(ID).pageTable.virtualBase;
+		if(frameVirtualToRewrite != -1)
 			memory.rewriteFromRAMToVirtualMemory(frameRAM, frameVirtualToRewrite);
-		}
-		//frameNumber, inRAM
 		int indexOfFrameToClear = 0;
 		for(int i=0; i<ProcessManagment.getPCB(ID).pageTable.frameNumber.length; i++) {
 			if(ProcessManagment.getPCB(ID).pageTable.frameNumber[indexOfFrameToClear]==frameRAM) 
@@ -267,21 +231,16 @@ public class PageTable {
 		}
 		ProcessManagment.getPCB(ID).pageTable.frameNumber[indexOfFrameToClear] = -1;
 		ProcessManagment.getPCB(ID).pageTable.inRAM[indexOfFrameToClear] = false;
-	//	ProcessManagment.getPCB(ID).pageTable.print();
 	}
 	
 	private void addEverythingAboutPageOfCurrentProcessToRAM(int frameVirtual, int frameRAM, int ID) {
-	//	System.out.println("addEverythingAboutPageOfCurrentProcessToRAM");
-	//	System.out.println("ID = " + ID + "; frameVirtual = " + frameVirtual + "; frameRAM = "+frameRAM);
 		frameNumber[frameVirtual-ProcessManagment.getPCB(ID).pageTable.getVirtualBase()] = frameRAM;
 		inRAM[frameVirtual-ProcessManagment.getPCB(ID).pageTable.getVirtualBase()] = true;
 		addFrameToFIFO(frameRAM, ID);
 	}
 	
-	// TODO: przetestowac
 	private Boolean isPageInCurrentProcess(int IDfromFIFO, int IDRunning) {
 		return IDfromFIFO == IDRunning;
-	//	return true;
 	}
 
 	private void addFrameToFIFO(int frameRAM, int ID) {
@@ -309,7 +268,6 @@ public class PageTable {
 		return(!memory.FIFO.get(elementIndex).bit);
 	}
 	
-	// TODO
 	private int getVirtualFrameOfOtherProcess() {
 		return 0;
 	}
@@ -363,7 +321,4 @@ public class PageTable {
             }
         }
     }
-	
-	
-
 }
